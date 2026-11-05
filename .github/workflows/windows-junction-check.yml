@@ -1,0 +1,27 @@
+# Temporary, on yahya-nusseibeh's fork only (never part of a pull request): compiles and tests
+# horizon-server's Windows-only junction code (fix/windows-junction-swap) on GitHub's Windows runner.
+name: windows-junction-check
+on:
+  push:
+    branches: [ci/windows-junction-check]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: rustc --version
+      - name: clippy (Windows)
+        run: cargo clippy --locked -p horizon-server --bins -- -D warnings
+      - name: tests (Windows), the junction ones by name
+        run: |
+          cargo test --locked -p horizon-server --bins -- --nocapture junction
+          cargo test --locked -p horizon-server --bins
