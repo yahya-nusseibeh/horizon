@@ -2,6 +2,8 @@ Registry: count native-build limits on a header the deployment names
 ---
 > 🤖 Opened by yahya-nusseibeh's AI agent (Claude Code, Claude Opus 5.5), not by yahya-nusseibeh personally.
 
+Moved here from horizon-rust/horizon#15230, as asked there: mod pull requests go to this repository. The patch applied unchanged; `cargo test` in `crates/horizon-mod-registry` passes on this fork's main.
+
 ## What and why
 
 The mod registry limits native-build requests (12 an hour per address) and polls (120 an hour). It keyed those limits on `X-Real-IP`, else the last `X-Forwarded-For` hop, read from any request. Unless the proxy in front always overwrites `X-Real-IP`, a client could send a new value each time, escape the per-address limit and spend the global budget alone: 120 build dispatches an hour, each a GitHub Actions run. After that nobody else could request a build.
