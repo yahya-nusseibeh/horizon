@@ -291,6 +291,14 @@ impl Manifest {
                 m.id
             ));
         }
+        // A mod's id is its own namespace: `minecraft`, `c` or `horizon` would make vanilla's (or
+        // the shared or Horizon's) files the mod's own, past the content fence.
+        if RESERVED_NAMESPACES.contains(&m.id.as_str()) {
+            return Err(format!(
+                "{MANIFEST}: id {} is a reserved namespace; pick another id",
+                m.id
+            ));
+        }
         if !valid_mod_id(&m.id) {
             return Err(format!(
                 "{MANIFEST}: id {:?} is not [a-z0-9_]{{1,64}}",
@@ -1474,6 +1482,16 @@ capabilities = ["registries"]
         std::fs::create_dir(root.join("native")).unwrap();
         assert!(Package::read(&root).is_err());
         std::fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn a_reserved_namespace_is_not_a_mod_id() {
+        for reserved in ["minecraft", "c", "horizon"] {
+            let m = EXAMPLE.replacen("id = \"ruby\"", &format!("id = \"{reserved}\""), 1);
+            assert_ne!(m, EXAMPLE);
+            let e = Manifest::parse(&m).unwrap_err();
+            assert!(e.contains("reserved namespace"), "{e}");
+        }
     }
 
     #[test]
