@@ -11,12 +11,12 @@ Two small Low findings:
 
 ## The fix
 
-1. An id already cached reuses its slot: its old name mapping is dropped and the new name mapped. A new id still adds an entry, as in vanilla.
+1. An id already cached under the same name reuses its slot. A rename adds a new entry and the old name keeps pointing at the old one until it expires, as in vanilla's `safeAdd`. A new id still adds an entry.
 2. The Summary step reads `BASE` from `env:`.
 
 ## Tests
 
-`the_same_player_joining_again_takes_no_new_entry`: 100 joins keep one entry, and a rename moves the name mapping. The workflow still parses as YAML.
+`the_same_player_joining_again_takes_no_new_entry`: 100 joins keep one entry; after a rename the old name still finds the old entry, the new name and the id find the new one, and rejoins under the new name add nothing. The workflow still parses as YAML.
 
 ## Kind
 - [x] Fix

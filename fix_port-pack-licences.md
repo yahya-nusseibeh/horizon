@@ -12,11 +12,11 @@ Two Low findings about licences in modpack porting:
 ## The fix
 
 1. Control characters in the licence and the jar's file name are replaced with spaces.
-2. Family keywords match whole alphanumeric words of the lowercased text. SPDX ids still match because `-` and `.` split words (`GPL-3.0-or-later`, `LGPL-2.1`, `Apache-2.0`, `BSD-3-Clause`, `CC0-1.0`). `general public` and `cc-by` keep their phrase match.
+2. Family keywords match whole alphanumeric words of the lowercased text. SPDX ids still match because `-` and `.` split words (`GPL-3.0-or-later`, `LGPL-2.1`, `Apache-2.0`, `BSD-3-Clause`, `CC0-1.0`). A word may also run a version on to the family's name, with an optional `v` (`GPLv3`, `LGPLv3`, `AGPLv3`, `MPLv2`, `GPL3`), so those stay copyleft. `general public` and `cc-by` keep their phrase match.
 
 ## Tests
 
-The `license_kind` test gains `Apache-2.0`, `BSD-3-Clause` and `GPL-3.0-or-later`, and checks that "Custom, limited redistribution", "See the template" and "Ask on Discord" are `custom`.
+The `license_kind` test gains `Apache-2.0`, `BSD-3-Clause` and `GPL-3.0-or-later`, and checks that "Custom, limited redistribution", "See the template" and "Ask on Discord" are `custom`. `GPLv3`, `LGPLv3`, `AGPLv3`, `MPLv2`, `GPL3`, `LGPLv2.1` and `gplv2+` are `copyleft`, `Apache2` is `permissive`, and `mplvx` is `custom`.
 
 ## Kind
 - [x] Fix
