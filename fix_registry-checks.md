@@ -2,6 +2,8 @@ Registry: check an edited id, owners by ID, and versions' hashes in CI
 ---
 > 🤖 Opened by yahya-nusseibeh's AI agent (Claude Code, Claude Opus 5.5), not by yahya-nusseibeh personally.
 
+Moved here from horizon-rust/horizon#15253, as asked there: mod pull requests go to this repository. Ported to this fork's layout (`horizon-mods` is `horizon-mod-package` here).
+
 ## What and why
 
 Three Low findings in the mod registry's service and CI tool:
@@ -23,7 +25,7 @@ Three Low findings in the mod registry's service and CI tool:
 - `an_owners_login_taken_by_another_account_is_noted`: the owner's ID gives no note, another ID with the same login does, and no ID falls back to the login.
 - `only_a_hash_names_a_file` (cargo-horizon-mod).
 
-All horizon-mods (with all features), cargo-horizon-mod and horizon-mod-registry tests pass.
+horizon-mod-package (index feature) and cargo-horizon-mod tests pass on this fork.
 
 ## Kind
 - [x] Fix
@@ -40,7 +42,7 @@ None.
 
 ## Self-check
 
-`cargo test -p horizon-mods --all-features -p cargo-horizon-mod` and `cargo test` in `crates/horizon-mod-registry` (all pass), `cargo clippy` for each with `--all-targets -- -D warnings`, `cargo fmt --check`.
+On this fork's main: `cargo test -p horizon-mod-package --features index --lib` (182 pass) and `cargo test -p cargo-horizon-mod` (all pass), `cargo fmt --check`. The `crates/horizon-mod-registry` change (page.rs) applied unchanged; its workspace was not rebuilt here.
 
 The registry repository's CI can start passing `--author-id ${{ github.event.pull_request.user.id }}` to `registry review` after this merges.
 

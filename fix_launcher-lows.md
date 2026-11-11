@@ -1,10 +1,10 @@
-Launcher: hardening for the server jar, MCP commands, cmd quoting, settings and sign-in
+Launcher: hardening for the server jar, MCP commands, cmd quoting and settings
 ---
 > 🤖 Opened by yahya-nusseibeh's AI agent (Claude Code, Claude Opus 5.5), not by yahya-nusseibeh personally.
 
 ## What and why
 
-Eight Low findings in the launcher:
+Six Low findings in the launcher:
 
 1. **Server jar.** The Mojang server jar was cached without checking it, and `!jar.exists()` meant a bad copy was never fetched again, for example a captive portal's page or a cut-off body. Every later Prepare then failed horizon-prepare's SHA-1 check until the player deleted the file.
 2. **MCP `server_command`.** It passed a `\n` into the server's stdin console, so one call ran several commands while the tool call showed one.
@@ -12,8 +12,6 @@ Eight Low findings in the launcher:
 4. **`complete_reports`.** Its temporary name depended only on the process id. The start-up thread and Play could copy the same report at once and one could write into the file the other had just renamed into place.
 5. **`settings.json`.** It can hold proxy credentials but was written `0644`.
 6. **Pre-launch command quoting.** On Windows, game words were quoted only for spaces, tabs and quotes. A `Rock&Roll` folder split the cmd.exe line, so the game didn't start and the rest ran as a command.
-7. **Moving the data folder.** It was refused when any folder above the data roots was a symbolic link, such as `~/.local/share` on another disk or Fedora Atomic's `/home`. Only the roots themselves are copied.
-8. **Sign-in numbers.** The services' `interval` and lifetimes were used unchecked. `Instant + Duration` with a huge interval panicked the sign-in thread, leaving the window on the code.
 
 ## The fix
 
@@ -23,17 +21,16 @@ Eight Low findings in the launcher:
 4. Each copy gets a per-call counter in its temporary name.
 5. The temporary file is created `0600` (`create_new`) before the rename.
 6. `& | < > ^ ( )` also make a word quoted.
-7. `reject_link` is applied only to the last component of the path.
-8. `interval` is clamped to 1–60 s (slow-down too), device-code expiry to an hour, and the Minecraft token lifetime to a week, all with `saturating_add`.
+
+Moved to their own pull requests at review: the sign-in bounds (fix/launcher-sign-in-bounds) and the data-folder link check (fix/launcher-data-link-above-root).
 
 Not done here: the Mods page's per-render file reads (a UI refactor of its own).
 
 ## Tests
 
 - `windows_words_are_quoted_as_the_c_runtime_reads_them`, extended with `&`, `|`, `<`, `>`, `^` and parentheses.
-- `a_link_above_the_root_is_followed` (Unix): a link above the root is followed, and a root that is itself a link is still refused.
 
-All 665 launcher library tests pass.
+All 667 launcher library tests pass (main merged).
 
 ## Kind
 - [x] Fix

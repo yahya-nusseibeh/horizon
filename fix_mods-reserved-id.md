@@ -2,6 +2,8 @@ Mods: refuse a mod id that is a reserved namespace
 ---
 > 🤖 Opened by yahya-nusseibeh's AI agent (Claude Code, Claude Opus 5.5), not by yahya-nusseibeh personally.
 
+Moved here from horizon-rust/horizon#15235, as asked there: mod pull requests go to this repository. Ported to this fork's layout (`horizon-mods` is `horizon-mod-package` here).
+
 ## What and why
 
 `Manifest::parse` checks only that `id` is `[a-z0-9_]{1,64}`. `RESERVED_NAMESPACES` (`minecraft`, `c`, `horizon`) was checked against the extra `namespaces` list but never against the id. In `Content::check`, the id's namespace counts as the mod's own (`own = namespace == id`).
@@ -33,6 +35,6 @@ None.
 
 ## Self-check
 
-`cargo test -p horizon-mods` (all pass), `cargo clippy -p horizon-mods --all-targets -- -D warnings`, `cargo fmt --check`.
+On this fork's main: `cargo test -p horizon-mod-package --lib` (145 pass, with the new `a_reserved_namespace_is_not_a_mod_id`), `cargo fmt --check`.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

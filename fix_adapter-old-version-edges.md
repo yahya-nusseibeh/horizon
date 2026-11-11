@@ -20,7 +20,7 @@ Low findings in the protocol adapter, each small:
 2. `-1` when stopped at 0.
 3. Keep the 64 most recent pending teleports.
 4. Lock lazily inside `entity_of`.
-5. `MAX_EXPLOSION_BLOCKS = 65_536` for the 1.20.2, 1.20.3 and 1.21.1 readers.
+5. The list is still read whole (bounded by the frame and the old 1,048,576 count), but only its first `MAX_EXPLOSION_BLOCKS = 65_536` blocks become immediate `BlockUpdate`s. A larger list is not an error: the server's own block updates for the rest still arrive, as they do for every block it changes.
 6. Drop such packets (`Ok(None)`).
 7. `mod_list::decode` refuses control characters in ids and versions, and `lan/conn.rs` `lost()` replaces any control character with a space.
 
@@ -31,8 +31,9 @@ Not done here: the review's Low on RSA implicit rejection. Its suggested fix ass
 - `a_clock_stopped_at_zero_is_sent_as_minus_one`.
 - `a_slot_in_an_unknown_negative_window_is_dropped_not_fatal`.
 - `a_line_break_in_a_mod_list_is_refused` (non-ASCII versions still pass).
+- `a_huge_explosion_list_is_cut_to_the_cap_not_refused`: vanilla's explosion bytes with 70,000 listed blocks decode, keep their count, and queue exactly 65,536 block updates.
 
-The other changes are one-line bounds, covered by the existing adapter tests (452 pass).
+The other changes are one-line bounds, covered by the existing adapter tests (453 pass with main merged).
 
 ## Kind
 - [x] Fix
