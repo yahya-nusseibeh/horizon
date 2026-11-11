@@ -693,7 +693,7 @@ pub fn check_kind(id: &str, old: &Kind, new: &Kind) -> Result<(), String> {
 /// `revoked.toml`), a project's kind never changes, and changes by someone who
 /// isn't an owner, or to owners and keys, are pointed out.
 pub fn review(base: &[Entry], head: &[Entry], author: &str) -> Review {
-    review_with_revoked(base, head, &[], author)
+    review_with_revoked(base, head, &[], author, None)
 }
 
 /// [`review`], where a version may leave its entry once `revoked` (the pull
@@ -705,6 +705,7 @@ pub fn review_with_revoked(
     head: &[Entry],
     revoked: &[Revoked],
     author: &str,
+    author_id: Option<u64>,
 ) -> Review {
     let mut r = Review::default();
     for old in base {
@@ -718,7 +719,13 @@ pub fn review_with_revoked(
         if new == old {
             continue;
         }
-        if !old.owners.iter().any(|o| o.eq_ignore_ascii_case(author)) {
+        // By ID when both are known: GitHub gives a renamed or deleted login to the next account
+        // that claims it, so a login alone could pass for an owner's.
+        let is_owner = match author_id {
+            Some(id) if !old.owner_ids.is_empty() => old.owner_ids.contains(&id),
+            _ => old.owners.iter().any(|o| o.eq_ignore_ascii_case(author)),
+        };
+        if !is_owner {
             r.notes.push(format!(
                 "{}: changed by {author}, who isn't one of its owners ({})",
                 old.id,
