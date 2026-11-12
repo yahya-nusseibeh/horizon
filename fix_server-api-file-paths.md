@@ -18,7 +18,7 @@ An owner who set an absolute path by hand in `server.toml` gets a clear error at
 ## Tests
 
 - `written_files_stay_in_the_server_folder`: for each of the four keys, an absolute path, `../`, a `..` deeper in, Windows backslashes, `C:x` and `C:\…` are refused, while `logs/chat-filter.log` and an empty strikes path pass.
-- `the_remote_api_keeps_away_from_what_runs`: the four keys are refused over the API, while `chat_filter.enabled` and `anticheat.alerts` are still allowed.
+- `keys_the_api_may_not_change_stay_refused_however_spaced`: the four keys are refused over the API, while `chat_filter.enabled` and `anticheat.alerts` are still allowed.
 
 `cargo test -p horizon-server` passes (196).
 
