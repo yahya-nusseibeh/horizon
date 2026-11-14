@@ -31,6 +31,6 @@ None.
 
 ## Self-check
 
-`cargo test -p horizon-server-files` (24 passed), `cargo clippy -p horizon-server-files --all-targets -- -D warnings`, `cargo fmt --check`; `pack-bench.yml` parses.
+`cargo test -p horizon-server-files` (30 passed, main merged), `cargo fmt --check`.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
